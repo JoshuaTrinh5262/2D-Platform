@@ -7,6 +7,8 @@ TagManager:
   - coin
   - pick_me
   - player
+  - KillBox
+  - Coin
   layers:
   - Default
   - TransparentFX

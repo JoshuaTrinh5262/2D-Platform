@@ -61,9 +61,11 @@
      <Compile Include="Assets\Scripts\Old Scripts\CameraControl.cs" />
      <Compile Include="Assets\Scripts\Old Scripts\DetectCollision.cs" />
      <Compile Include="Assets\Scripts\Old Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\PickUpPoints.cs" />
      <Compile Include="Assets\Scripts\PlatformDestroyer.cs" />
      <Compile Include="Assets\Scripts\PlatformGenerator.cs" />
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\ScoreManager.cs" />
      <None Include="Assets\Art\Spritesheets\spritesheet_complete.xml" />
      <None Include="Assets\Art\Spritesheets\spritesheet_hud.xml" />
      <None Include="Assets\Art\Spritesheets\spritesheet_ground.xml" />

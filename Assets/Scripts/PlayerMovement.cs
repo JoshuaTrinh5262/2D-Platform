@@ -24,6 +24,12 @@ public class PlayerMovement : MonoBehaviour
     //#10 Better Ground Detection
     public Transform groundCheck;
     public float groundCheckRadious;
+    //#11 Restarting
+    public GameManager theGameManager;
+    //#Reset Move Speed When Die
+    private float moveSpeedStore;
+    private float speedMilestoneCountStore;
+    private float speedIncreaseMilestoneStore;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +40,12 @@ public class PlayerMovement : MonoBehaviour
         myAnimator=GetComponent<Animator>();
         //
         jumpTimeCounter=jumpTime;
+        //
+        speedMilestoneCount=speedIncreaseMilestone;
+        //
+        speedIncreaseMilestoneStore=speedIncreaseMilestone;
+        speedMilestoneCountStore=speedMilestoneCount;
+        moveSpeedStore=moveSpeed;
     }
 
     // Update is called once per frame
@@ -77,5 +89,15 @@ public class PlayerMovement : MonoBehaviour
         }
         myAnimator.SetFloat("Speed",myRigidbody.velocity.x);
         myAnimator.SetBool("Grounded",grounded);
+    }
+    private void OnTriggerEnter2D(Collider2D other) {
+        if(other.gameObject.tag=="KillBox")
+        {
+            
+            theGameManager.RestartGame();
+            moveSpeed=moveSpeedStore;
+            speedMilestoneCount=speedMilestoneCountStore;
+            speedIncreaseMilestone=speedIncreaseMilestoneStore;
+        }
     }
 }
