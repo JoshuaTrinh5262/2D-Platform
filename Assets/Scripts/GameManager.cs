@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     private PlatformDestroyer[] platformList;
     //
     private ScoreManager theScoreManager;
+    //
+    public DeathMenu theDeathScene;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,16 +25,32 @@ public class GameManager : MonoBehaviour
         //
         theScoreManager=FindObjectOfType<ScoreManager>();
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void RestartGame()
     {
-        StartCoroutine("RestartGameCo");
+        theScoreManager.scoreIncreasing=false;
+        thePlayer.gameObject.SetActive(false);
+        //StartCoroutine("RestartGameCo");
+        //
+        theDeathScene.gameObject.SetActive(true);
     }
-    public IEnumerator RestartGameCo()
+    //#17 After Death Menu
+    public  void Reset() 
+    {
+        theDeathScene.gameObject.SetActive(false);
+        platformList=FindObjectsOfType<PlatformDestroyer>();
+        for(int i=0;i<platformList.Length;i++)
+        {
+            platformList[i].gameObject.SetActive(false);
+        }
+        thePlayer.transform.position=playerStartPoint;
+        platformGenerator.position=platformStartPoint;
+        thePlayer.gameObject.SetActive(true);
+        //Reset Score last moment
+        theScoreManager.scoreCount=0;
+        theScoreManager.scoreIncreasing=true;
+    }
+    /*public IEnumerator RestartGameCo()
     {
         theScoreManager.scoreIncreasing=false;
         thePlayer.gameObject.SetActive(false);
@@ -47,5 +66,6 @@ public class GameManager : MonoBehaviour
         //Reset Score last moment
         theScoreManager.scoreCount=0;
         theScoreManager.scoreIncreasing=true;
-    }
+    }*/
+    
 }

@@ -24,6 +24,14 @@ public class PlatformGenerator : MonoBehaviour
     public float maxHeightChange;
     private float heightChange;
     //public ObjectPooler theObjectPool; 
+    //#14 Random Coin Placement
+    private CoinGenerator theCoinGenerator;
+    public float randomCoinThreshold;
+    //#20 Extra Danger Spikes
+    public ObjectPooler spikePool;
+    public float randomSpikeThreshold;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +44,8 @@ public class PlatformGenerator : MonoBehaviour
         }
         minHeight=transform.position.y;
         maxHeight=maxHeightPoint.position.y;
+        //
+        theCoinGenerator=FindObjectOfType<CoinGenerator>();
     }
 
     // Update is called once per frame
@@ -71,8 +81,25 @@ public class PlatformGenerator : MonoBehaviour
             newPlatform.transform.position=transform.position;
             newPlatform.transform.rotation=transform.rotation;
             newPlatform.SetActive(true);
+            //#14 Random Coin Placement
+            if(Random.Range(0f,100f)<randomCoinThreshold)
+            {
+                //generate Coin above platform
+                theCoinGenerator.SpawnCoins(new Vector3(transform.position.x,transform.position.y+1,transform.position.z));
+            }
+            //#20 Extra Danger Spikes
+            if(Random.Range(0f,100f)<randomSpikeThreshold)
+            {
+                GameObject newSpike=spikePool.GetPooledObject();
 
-            transform.position=new Vector3(transform.position.x+(platformWidths[platformSelector]/2)+distanceBetween,transform.position.y,transform.position.z);
+                float spikeXPosition=Random.Range(-platformWidths[platformSelector]/2f+1f,platformWidths[platformSelector]/2f-1f);
+                Vector3 spikePosition=new Vector3(spikeXPosition,1f,0f);
+                newSpike.transform.position=transform.position+spikePosition;
+                newSpike.transform.rotation=transform.rotation;
+                newSpike.SetActive(true);
+            }
+            //
+            transform.position=new Vector3(transform.position.x+(platformWidths[platformSelector]/2f)+distanceBetween,transform.position.y,transform.position.z);
         }
     }
 }

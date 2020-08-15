@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeedStore;
     private float speedMilestoneCountStore;
     private float speedIncreaseMilestoneStore;
+    //#15 Double Jump
+    private bool stoppedJumping;
+    private bool canDoubleJump;
+    //#19 Sound Effect
+    public AudioSource jumpSound;
+    public AudioSource deathSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
         speedIncreaseMilestoneStore=speedIncreaseMilestone;
         speedMilestoneCountStore=speedMilestoneCount;
         moveSpeedStore=moveSpeed;
+        //#15 Double Jump
+        stoppedJumping=true;
     }
 
     // Update is called once per frame
@@ -54,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
         //grounded=Physics2D.IsTouchingLayers(myCollider,whatIsGround);
         grounded=Physics2D.OverlapCircle(groundCheck.position,groundCheckRadious,whatIsGround);
         //
-        if(transform.position.x>speedIncreaseMilestone)
+        if(transform.position.x>speedMilestoneCount)
         {
             speedMilestoneCount+=speedIncreaseMilestone;
             speedIncreaseMilestone=speedIncreaseMilestone*speedMultiplier;
@@ -69,9 +77,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 myRigidbody.velocity=new Vector2(myRigidbody.velocity.x,jumpForce);
                 //myRigidbody.velocity=new Vector3(myRigidbody.velocity.x,jumpForce,0f);
+                stoppedJumping=false;
+                //#19 Sound Effect
+                jumpSound.Play();
+            }
+            if(!grounded&&canDoubleJump)//grounded =false canDoubleJump=true
+            {
+                myRigidbody.velocity=new Vector2(myRigidbody.velocity.x,jumpForce);
+                jumpTimeCounter-=Time.deltaTime;
+                stoppedJumping=false;
+                canDoubleJump=false;
+                jumpSound.Play();
             }
         }
-        if(Input.GetKey(KeyCode.Z)||Input.GetMouseButton(0))
+        if((Input.GetKey(KeyCode.Z)||Input.GetMouseButton(0))&& stoppedJumping)//stoppedJumping=true
         {
             if(jumpTimeCounter>0)
             {
@@ -79,13 +98,15 @@ public class PlayerMovement : MonoBehaviour
                 jumpTimeCounter-=Time.deltaTime;
             }
         }
-        /*if(Input.GetKeyUp(KeyCode.Z)||Input.GetMouseButtonUp(0))
+        if(Input.GetKeyUp(KeyCode.Z)||Input.GetMouseButtonUp(0))
         {
             jumpTimeCounter=0;
-        }*/
+            stoppedJumping=true;
+        }
         if(grounded)
         {
             jumpTimeCounter=jumpTime;
+            canDoubleJump=true;
         }
         myAnimator.SetFloat("Speed",myRigidbody.velocity.x);
         myAnimator.SetBool("Grounded",grounded);
@@ -98,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed=moveSpeedStore;
             speedMilestoneCount=speedMilestoneCountStore;
             speedIncreaseMilestone=speedIncreaseMilestoneStore;
+            deathSound.Play();
         }
     }
 }
